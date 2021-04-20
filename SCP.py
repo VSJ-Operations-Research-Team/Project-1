@@ -32,20 +32,6 @@ def readValues(filename):
         
     return elements, costs
 
-# def fixFormat(sets, costs):
-#     objective = [ sum( [ costs[e-1] for e in s ] ) for s in sets ]
-#     elements = [ [] for _ in range(len(costs)) ]
-#     constraints = []
-    
-#     for i in range(len(sets)):
-#         for e in sets[i]:
-#             elements[e-1].append(i)
-    
-#     for e in elements:
-#         cval = [[ s for s in e ], [1] * len(e)]
-#         constraints.append(cval)
-        
-#     return objective, constraints
 
 def fixFormat(elements, costs):
     objective = costs
@@ -115,7 +101,6 @@ def solveProblem(filename):
         sol = problem.solution.get_objective_value()
     elif status in [0, 103]:
         sol = 0
-    #print(problem.solution.get_values())
     return total_time, sol
 
 
