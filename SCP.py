@@ -109,7 +109,7 @@ def main():
     with open("outfile.txt", "w") as outfile:
         for file in listdir( path ):
             time, sol =  solveProblem( path + file )
-            str_sol = file.replace(".txt", "") + "\t\t" + str( int(time*one_million)/one_million ) + "\t\t"  + str(sol) + "\n"
+            str_sol = file.replace(".txt", "") + "\t\t" + "{0:.06f}".format(time) + "\t\t"  + str(sol) + "\n"
             outfile.write( str_sol )
             print(str_sol)
     
