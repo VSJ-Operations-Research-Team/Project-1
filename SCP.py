@@ -1,5 +1,6 @@
 import cplex
 from os import listdir
+import time
 
 path = "Problem-Set/"
 
@@ -49,10 +50,12 @@ def fixFormat(sets, costs):
 def defineProblem(ns, ne, objective, constraints):
 
     problem = cplex.Cplex()
-    # vv Hacer que no corra por más de 10 minutos vv
-    problem.parameters.timelimit.set(600)   
-    problem.objective.set_sense(problem.objective.sense.minimize)
     
+    # vv Hacer que no corra por más de 10 minutos vv #
+    problem.parameters.timelimit.set(600)   
+    
+    
+    problem.objective.set_sense(problem.objective.sense.minimize)
     
     # Variables
     names = [f"set {i+1}" for i in range(ns)]
@@ -78,6 +81,7 @@ def defineProblem(ns, ne, objective, constraints):
 # Inicio del problema
 def solveProblem(filename):
     
+    
     # Leer Datos
     sets, costs = readValues(filename)
     objective, constraints = fixFormat(sets, costs)
@@ -88,39 +92,28 @@ def solveProblem(filename):
 
     # Resolver el problema
     problem.set_results_stream(None) # Silencio!
+    start_time = time.time()
     try:
         problem.solve()
     except:
-        print("Error")
+        print("---", end="")
+    total_time = time.time() - start_time
     
-    
-    
-    print("")
     status = problem.solution.get_status()
-    print(f"[{status}] ", end="")
     if status in [101, 102, 107]:
-        if status == 101:
-            print("La solución es óptima")
-        if status == 102:
-            print("La solución es óptima (dentro de los límites)")
-        elif status == 107:
-            print("Se agotó el tiempo de espera")
-            print("A continuación se muestra la mejor solución encontrada")
-        print("Soluciones:", problem.solution.get_values())
-        print("Valor Objetivo:", problem.solution.get_objective_value())
-    elif status == 103:
-        print("La solución es infactible")
-    elif status == 0:
-        print("El estado final es desconocido")
+        sol = problem.solution.get_objective_value()
+    elif status in [0, 103]:
+        sol = 0
     
+    return total_time, sol
 
 
 
 def main():
     # Read File Loop
     for file in listdir( path ):
-        print("\nProblema:", file)
-        solveProblem( path + file )
+        time, sol =  solveProblem( path + file )
+        print( file.replace(".txt", ""), time, sol, sep="\t\t" )
     
 
 if __name__ == "__main__":
