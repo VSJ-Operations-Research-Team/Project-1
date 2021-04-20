@@ -105,7 +105,6 @@ def solveProblem(filename):
 
 def main():
     # Read File Loop
-    one_million = 1000000
     with open("outfile.txt", "w") as outfile:
         for file in listdir( path ):
             time, sol =  solveProblem( path + file )
