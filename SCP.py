@@ -77,8 +77,6 @@ def defineProblem(ns, ne, objective, constraints):
 
 # Inicio del problema
 def solveProblem(filename):
-    
-    
     # Leer Datos
     elements, costs = readValues(filename)
     objective, constraints = fixFormat(elements, costs)
@@ -107,10 +105,11 @@ def solveProblem(filename):
 
 def main():
     # Read File Loop
+    one_million = 1000000
     with open("outfile.txt", "w") as outfile:
         for file in listdir( path ):
             time, sol =  solveProblem( path + file )
-            str_sol = file.replace(".txt", "") + "\t\t" + str(time) + "\t\t"  + str(sol) + "\n"
+            str_sol = file.replace(".txt", "") + "\t\t" + str( int(time*one_million)/one_million ) + "\t\t"  + str(sol) + "\n"
             outfile.write( str_sol )
             print(str_sol)
     
