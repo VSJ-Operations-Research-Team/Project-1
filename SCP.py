@@ -15,37 +15,48 @@ def readValues(filename):
     values = valueBuffer(filename)
     
     costs = []
-    sets = []
-    set_number = values.__next__()
-    element_number = values.__next__()
+    elements = []
+    set_number = values.__next__()      # No. of sets
+    element_number = values.__next__()  # No. of elements
     
     # Leer datos
     for _ in range(element_number):
         costs.append( values.__next__() )
     
     for _ in range(set_number):
-        num_elements_in_set = values.__next__()
-        elements_in_set = []
-        for _ in range(num_elements_in_set):
-            elements_in_set.append( values.__next__() )
-        sets.append( elements_in_set )
+        num_sets_per_element = values.__next__()
+        sets_per_element = []
+        for _ in range(num_sets_per_element):
+            sets_per_element.append( values.__next__() )
+        elements.append( sets_per_element )
         
-    return sets, costs
+    return elements, costs
 
-def fixFormat(sets, costs):
-    objective = [ sum( [ costs[e-1] for e in s ] ) for s in sets ]
-    elements = [ [] for _ in range(len(costs)) ]
+# def fixFormat(sets, costs):
+#     objective = [ sum( [ costs[e-1] for e in s ] ) for s in sets ]
+#     elements = [ [] for _ in range(len(costs)) ]
+#     constraints = []
+    
+#     for i in range(len(sets)):
+#         for e in sets[i]:
+#             elements[e-1].append(i)
+    
+#     for e in elements:
+#         cval = [[ s for s in e ], [1] * len(e)]
+#         constraints.append(cval)
+        
+#     return objective, constraints
+
+def fixFormat(elements, costs):
+    objective = costs
     constraints = []
     
-    for i in range(len(sets)):
-        for e in sets[i]:
-            elements[e-1].append(i)
-    
     for e in elements:
-        cval = [[ s for s in e ], [1] * len(e)]
+        cval = [[ s-1 for s in e ], [1] * len(e)]
         constraints.append(cval)
         
     return objective, constraints
+
 
 def defineProblem(ns, ne, objective, constraints):
 
@@ -83,9 +94,9 @@ def solveProblem(filename):
     
     
     # Leer Datos
-    sets, costs = readValues(filename)
-    objective, constraints = fixFormat(sets, costs)
-    ns, ne = len(sets), len(costs)
+    elements, costs = readValues(filename)
+    objective, constraints = fixFormat(elements, costs)
+    ne, ns = len(elements), len(costs)
     
     # Definir el problema
     problem = defineProblem(ns, ne, objective, constraints)
@@ -104,7 +115,7 @@ def solveProblem(filename):
         sol = problem.solution.get_objective_value()
     elif status in [0, 103]:
         sol = 0
-    
+    #print(problem.solution.get_values())
     return total_time, sol
 
 
@@ -114,9 +125,9 @@ def main():
     with open("outfile.txt", "w") as outfile:
         for file in listdir( path ):
             time, sol =  solveProblem( path + file )
-            outfile.write( file.replace(".txt", "") + "\t\t" 
-                          + str(time) + "\t\t" 
-                          + str(sol) + "\n" )
+            str_sol = file.replace(".txt", "") + "\t\t" + str(time) + "\t\t"  + str(sol) + "\n"
+            outfile.write( str_sol )
+            print(str_sol)
     
 
 if __name__ == "__main__":
