@@ -111,9 +111,12 @@ def solveProblem(filename):
 
 def main():
     # Read File Loop
-    for file in listdir( path ):
-        time, sol =  solveProblem( path + file )
-        print( file.replace(".txt", ""), time, sol, sep="\t\t" )
+    with open("outfile.txt", "w") as outfile:
+        for file in listdir( path ):
+            time, sol =  solveProblem( path + file )
+            outfile.write( file.replace(".txt", "") + "\t\t" 
+                          + str(time) + "\t\t" 
+                          + str(sol) + "\n" )
     
 
 if __name__ == "__main__":
