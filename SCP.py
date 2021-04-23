@@ -88,13 +88,14 @@ def solveProblem(filename):
 
     # Resolver el problema
     problem.set_results_stream(None) # Silencio!
-    start_time = time.time()
     try:
+        start_time = time.time()
         problem.solve()
+        total_time = time.time() - start_time
     except:
         print("---", end="")
-    total_time = time.time() - start_time
     
+    total_time = -1
     status = problem.solution.get_status()
     if status in [101, 102, 107]:
         obj_value = problem.solution.get_objective_value()
