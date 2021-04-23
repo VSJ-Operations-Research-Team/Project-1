@@ -3,6 +3,7 @@ from os import listdir
 import time
 
 path = "Problem-Set/"
+sol_path = "Solutions/"
 
 
 def valueBuffer(filename):
@@ -96,10 +97,12 @@ def solveProblem(filename):
     
     status = problem.solution.get_status()
     if status in [101, 102, 107]:
-        sol = problem.solution.get_objective_value()
+        obj_value = problem.solution.get_objective_value()
+        sol = problem.solution.get_values()
     elif status in [0, 103]:
-        sol = 0
-    return total_time, sol
+        obj_value = 0
+        sol = None
+    return total_time, obj_value, sol
 
 
 
@@ -107,9 +110,11 @@ def main():
     # Read File Loop
     with open("outfile.txt", "w") as outfile:
         for file in listdir( path ):
-            time, sol =  solveProblem( path + file )
-            str_sol = file.replace(".txt", "") + "\t\t" + "{0:.06f}".format(time) + "\t\t"  + str(sol) + "\n"
+            time, obj_value, sol =  solveProblem( path + file )
+            str_sol = file.replace(".txt", "") + "\t\t" + "{0:.06f}".format(time) + "\t\t"  + str(obj_value) + "\n"
             outfile.write( str_sol )
+            with open( sol_path + file.replace(".txt", ".sol"), "w" ) as sol_file:
+                sol_file.write( str( sol ) )
             print(str_sol)
     
 
